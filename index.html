@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terra Mystica Randomizer</title>
+  <meta name="description" content="Randomize factions, scoring tiles, bonus cards and boards for Terra Mystica.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%94%EF%B8%8F%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+  <header class="site-header">
+    <h1>Terra Mystica <span>Randomizer</span></h1>
+    <p class="tagline">Factions · Terrains · Scoring Tiles · Bonus Cards · Boards</p>
+  </header>
+
+  <main>
+    <!-- ============================ SETUP ============================ -->
+    <section id="setup-screen" class="screen">
+
+      <div class="panel">
+        <h2>1 · Players</h2>
+        <p class="hint">2–5 players by default — add more if the enabled faction pool allows it.</p>
+        <div id="player-list" class="player-list"></div>
+        <div class="row">
+          <button id="add-player" class="btn btn-secondary" type="button">+ Add player</button>
+          <span id="capacity-hint" class="capacity-hint"></span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>2 · Faction pools</h2>
+        <p class="hint">Toggle whole groups, or expand a group to include/exclude individual factions.</p>
+        <div id="faction-groups"></div>
+      </div>
+
+      <div class="panel">
+        <h2>3 · Options</h2>
+        <label class="opt">
+          <input type="checkbox" id="opt-strict-terrain">
+          <span><strong>Strict terrain lock</strong> — no two players may share a home terrain</span>
+        </label>
+        <label class="opt">
+          <input type="checkbox" id="opt-random-board">
+          <span><strong>Randomize board</strong> — also pick a game board</span>
+        </label>
+        <label class="opt">
+          <input type="checkbox" id="opt-fireice-tiles" checked>
+          <span><strong>Fire &amp; Ice tiles/cards</strong> — include the F&amp;I scoring tile and bonus card</span>
+        </label>
+        <label class="opt">
+          <input type="checkbox" id="opt-sound">
+          <span><strong>Sound effects</strong> (muted by default)</span>
+        </label>
+      </div>
+
+      <div id="setup-errors" class="errors" hidden></div>
+
+      <button id="randomize" class="btn btn-primary btn-big" type="button">⚔️ Randomize setup</button>
+    </section>
+
+    <!-- ========================== ANIMATION ========================== -->
+    <div id="reveal-overlay" class="reveal-overlay" hidden aria-hidden="true">
+      <div class="shuffle-stage">
+        <div class="shuffle-card c1"></div>
+        <div class="shuffle-card c2"></div>
+        <div class="shuffle-card c3"></div>
+        <div class="shuffle-card c4"></div>
+        <div class="shuffle-card c5"></div>
+      </div>
+      <p class="reveal-text">Consulting the cults…</p>
+    </div>
+
+    <!-- =========================== RESULTS =========================== -->
+    <section id="result-screen" class="screen" hidden>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Factions</h2>
+          <button class="btn btn-secondary" id="reroll-factions" type="button">🎲 Reroll all factions</button>
+        </div>
+        <div id="result-players" class="faction-grid"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Round scoring tiles</h2>
+          <button class="btn btn-secondary" id="reroll-tiles" type="button">🎲 Reroll tiles</button>
+        </div>
+        <div id="result-tiles" class="tile-row"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Bonus cards</h2>
+          <button class="btn btn-secondary" id="reroll-bonus" type="button">🎲 Reroll cards</button>
+        </div>
+        <div id="result-bonus" class="tile-row"></div>
+      </div>
+
+      <div class="panel" id="board-panel" hidden>
+        <div class="panel-head">
+          <h2>Board</h2>
+          <button class="btn btn-secondary" id="reroll-board" type="button">🎲 Reroll board</button>
+        </div>
+        <div id="result-board" class="board-result"></div>
+      </div>
+
+      <button id="new-game" class="btn btn-primary btn-big" type="button">↩️ New game</button>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Unofficial fan tool. Terra Mystica is © Feuerland Spiele / Helge Ostertag &amp; Jens Drögemüller.
+       Drop official artwork into <code>assets/</code> to replace the placeholders — see the README.</p>
+  </footer>
+
+  <script src="js/random.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/randomizer.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
