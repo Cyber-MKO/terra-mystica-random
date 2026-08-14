@@ -7,7 +7,9 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, master]
+    # main/master for after the branch is merged; the claude/* branch is the
+    # repository's current default branch, so deploy from it directly too.
+    branches: [main, master, 'claude/terra-mystica-randomizer-pacici']
   workflow_dispatch:
 
 permissions:
