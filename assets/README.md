@@ -14,7 +14,8 @@ placeholder.
 | `boards/`   | `<board-id>.jpg`       | `boards/original.jpg`          |
 
 The ids are defined in [`js/data.js`](../js/data.js) — check that file for
-the full list (e.g. faction ids `halflings`, `cultists`, …, `shapeshifters`;
+the full list (e.g. faction ids `halflings`, `cultists`, …, `shapeshifters`,
+plus Fan Factions expansion ids like `architects`, `djinn`, `snowshamans`;
 scoring tiles `score1`–`score9`; bonus cards `bon1`–`bon10`; boards
 `original`, `fireice`, `loonlakes`, `fjords`).
 

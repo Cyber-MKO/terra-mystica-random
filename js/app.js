@@ -214,7 +214,7 @@
       pools: pools,
       assignments: assignments,
       scoringTiles: L.pickScoringTiles(pools.scoring),
-      bonusCards: L.pickBonusCards(pools.bonus, names.length),
+      bonusCards: L.pickBonusCards(pools.bonus, names.length, assignments),
       board: options.randomBoard ? L.pickBoard(pools.boards) : null
     };
 
@@ -262,11 +262,25 @@
     renderBoard();
   }
 
+  /**
+   * The Archivists' setup rule adds one bonus card (players + 4 instead of
+   * players + 3), so a faction change can alter how many cards are in the
+   * game. Re-deal the bonus cards if the required count no longer matches.
+   */
+  function syncBonusCardCount() {
+    var fresh = L.pickBonusCards(game.pools.bonus, game.names.length, game.assignments);
+    if (fresh.length !== game.bonusCards.length) {
+      game.bonusCards = fresh;
+      renderBonus();
+    }
+  }
+
   function rerollSeat(i) {
     var next = L.rerollOne(game.names, game.pool, game.options, game.assignments, i);
     if (next) game.assignments = next;
     global.TMSound.reveal();
     renderFactions();
+    syncBonusCardCount();
   }
 
   document.getElementById('reroll-factions').addEventListener('click', function () {
@@ -274,6 +288,7 @@
     if (next) game.assignments = next;
     global.TMSound.reveal();
     renderFactions();
+    syncBonusCardCount();
   });
 
   document.getElementById('reroll-tiles').addEventListener('click', function () {
@@ -283,7 +298,7 @@
   });
 
   document.getElementById('reroll-bonus').addEventListener('click', function () {
-    game.bonusCards = L.pickBonusCards(game.pools.bonus, game.names.length);
+    game.bonusCards = L.pickBonusCards(game.pools.bonus, game.names.length, game.assignments);
     global.TMSound.reveal();
     renderBonus();
   });

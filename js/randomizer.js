@@ -224,9 +224,17 @@
     return slots;
   }
 
-  /** Bonus cards used in a game: players + 3 (capped at pool size). */
-  function pickBonusCards(cards, playerCount) {
-    var n = Math.min(playerCount + D.BONUS_CARD_EXTRA, cards.length);
+  /**
+   * Bonus cards used in a game: players + 3, or players + 4 when the
+   * Archivists are in play (their setup rule adds one extra card).
+   * Capped at pool size.
+   */
+  function pickBonusCards(cards, playerCount, assignments) {
+    var extra = D.BONUS_CARD_EXTRA;
+    if (assignments && assignments.some(function (a) {
+      return a && a.faction.id === 'archivists';
+    })) extra += 1;
+    var n = Math.min(playerCount + extra, cards.length);
     return R.sample(cards, n);
   }
 
@@ -248,6 +256,9 @@
 
     if (names.length < D.MIN_PLAYERS) {
       errors.push('At least ' + D.MIN_PLAYERS + ' players are required.');
+    }
+    if (names.length > D.MAX_PLAYERS) {
+      errors.push('At most ' + D.MAX_PLAYERS + ' players are supported.');
     }
     if (names.some(function (n) { return !n; })) {
       errors.push('Every player needs a name.');

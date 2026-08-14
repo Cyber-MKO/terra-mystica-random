@@ -68,22 +68,42 @@
     { id: 'riverwalkers',  name: 'Riverwalkers',  group: 'fireice', terrain: null, special: 'Variable', excludes: ['shapeshifters'] },
     { id: 'shapeshifters', name: 'Shapeshifters', group: 'fireice', terrain: null, special: 'Variable', excludes: ['riverwalkers'] },
 
-    // ---- Fan factions (sample set — replace/extend freely) --------------
-    // These are illustrative entries so the group works out of the box.
-    // Swap in your favourite community factions by editing this list.
-    { id: 'trolls',   name: 'Trolls (fan)',   group: 'fan', terrain: 'mountains' },
-    { id: 'druids',   name: 'Druids (fan)',   group: 'fan', terrain: 'forest' },
-    { id: 'corsairs', name: 'Corsairs (fan)', group: 'fan', terrain: 'lakes' },
-    { id: 'seers',    name: 'Seers (fan)',    group: 'fan', terrain: 'desert' },
+    // ---- Fan Factions expansion, base-game factions (14) ----------------
+    // From the official "Fan Factions" expansion (Feuerland Spiele /
+    // Capstone Games, rulebook v1.1): 14 factions for the base game,
+    // two per terrain color like the original factions.
+    { id: 'prospectors',       name: 'Prospectors',          group: 'fan', terrain: 'plains' },
+    { id: 'timetravelers',     name: 'Time Travelers',       group: 'fan', terrain: 'plains' },
+    { id: 'childrenofthewyrm', name: 'Children of the Wyrm', group: 'fan', terrain: 'swamp' },
+    { id: 'goblins',           name: 'Goblins',              group: 'fan', terrain: 'swamp' },
+    { id: 'atlanteans',        name: 'Atlanteans',           group: 'fan', terrain: 'lakes' },
+    { id: 'wisps',             name: 'Wisps',                group: 'fan', terrain: 'lakes' },
+    { id: 'chashdallah',       name: 'Chash Dallah',         group: 'fan', terrain: 'forest' },
+    { id: 'enlightened',       name: 'The Enlightened',      group: 'fan', terrain: 'forest' },
+    { id: 'conspirators',      name: 'Conspirators',         group: 'fan', terrain: 'mountains' },
+    { id: 'dyniongeifr',       name: 'Dynion Geifr',         group: 'fan', terrain: 'mountains' },
+    { id: 'architects',        name: 'Architects',           group: 'fan', terrain: 'wasteland' },
+    { id: 'treasurers',        name: 'Treasurers',           group: 'fan', terrain: 'wasteland' },
+    { id: 'archivists',        name: 'Archivists',           group: 'fan', terrain: 'desert' },
+    { id: 'djinn',             name: 'Djinn',                group: 'fan', terrain: 'desert' },
 
-    // ---- Fire & Ice fan factions (sample set) ---------------------------
-    // Fan factions built on the Fire & Ice terrain mechanics. They share
-    // terrain pieces with the official Ice/Volcano factions, so they
-    // exclude them (and each other) accordingly.
-    { id: 'frostgiants', name: 'Frost Giants (fan)', group: 'fireice-fan', terrain: null, special: 'Ice',
-      excludes: ['icemaidens', 'yetis'] },
-    { id: 'ashwalkers',  name: 'Ash Walkers (fan)',  group: 'fireice-fan', terrain: null, special: 'Volcano',
-      excludes: ['acolytes', 'dragonlords'] }
+    // ---- Fan Factions expansion, Fire & Ice factions (6) ----------------
+    // Two Ice, two Volcano and two Variable factions, mirroring the
+    // official Fire & Ice split. They use the same Ice/Volcano terrain
+    // pieces (and Geologists even use the Shapeshifter ring), so only one
+    // faction of each special type may be in a game — official or fan.
+    { id: 'snowshamans',   name: 'Snow Shamans',    group: 'fireice-fan', terrain: null, special: 'Ice',
+      excludes: ['icemaidens', 'yetis', 'selkies'] },
+    { id: 'selkies',       name: 'Selkies',         group: 'fireice-fan', terrain: null, special: 'Ice',
+      excludes: ['icemaidens', 'yetis', 'snowshamans'] },
+    { id: 'firewalkers',   name: 'Firewalkers',     group: 'fireice-fan', terrain: null, special: 'Volcano',
+      excludes: ['acolytes', 'dragonlords', 'kingdomofember'] },
+    { id: 'kingdomofember', name: 'Kingdom of Ember', group: 'fireice-fan', terrain: null, special: 'Volcano',
+      excludes: ['acolytes', 'dragonlords', 'firewalkers'] },
+    { id: 'changelings',   name: 'Changelings',     group: 'fireice-fan', terrain: null, special: 'Variable',
+      excludes: ['riverwalkers', 'shapeshifters', 'geologists'] },
+    { id: 'geologists',    name: 'Geologists',      group: 'fireice-fan', terrain: null, special: 'Variable',
+      excludes: ['riverwalkers', 'shapeshifters', 'changelings'] }
   ];
 
   /**
@@ -137,8 +157,8 @@
     BONUS_CARDS: BONUS_CARDS,
     BOARDS: BOARDS,
     SCORING_TILE_COUNT: 6,
-    BONUS_CARD_EXTRA: 3, // cards used = players + 3
+    BONUS_CARD_EXTRA: 3, // cards used = players + 3 (+1 more with Archivists)
     MIN_PLAYERS: 2,
-    MAX_PLAYERS: 7
+    MAX_PLAYERS: 5
   };
 })(window);
