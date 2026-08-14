@@ -244,7 +244,6 @@ main { max-width: 960px; margin: 0 auto; padding: 0 1rem 3rem; }
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  perspective: 700px;
 }
 .faction-card .art {
   position: relative;
@@ -288,8 +287,8 @@ main { max-width: 960px; margin: 0 auto; padding: 0 1rem 3rem; }
 /* flip-in reveal */
 .flip-in { animation: flip-in 0.55s ease both; }
 @keyframes flip-in {
-  from { transform: rotateY(90deg); opacity: 0; }
-  to { transform: rotateY(0); opacity: 1; }
+  from { transform: perspective(700px) rotateY(88deg); opacity: 0; }
+  to { transform: perspective(700px) rotateY(0); opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
   .flip-in, .shuffle-card, .reveal-text { animation: none !important; }

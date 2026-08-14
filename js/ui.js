@@ -114,19 +114,40 @@
   /**
    * Replace `container`'s children with `nodes`, revealing them one by one
    * for a short dramatic effect.
+   *
+   * Robustness: some browsers occasionally skip or fail to repaint delayed
+   * CSS animations, leaving a card stuck invisible until a click forces a
+   * repaint. So each card is snapped to its final visible state on
+   * `animationend`, and a watchdog timer does the same for every card
+   * shortly after the whole sequence should have finished.
    */
   function renderStaggered(container, nodes, stepMs) {
     container.innerHTML = '';
     var reduced = global.matchMedia &&
       global.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var step = stepMs || 120;
+
+    function settle(node) {
+      node.classList.remove('flip-in');
+      node.style.animation = 'none';
+      node.style.animationDelay = '';
+      node.style.opacity = '1';
+      node.style.transform = 'none';
+    }
+
     nodes.forEach(function (node, i) {
       if (reduced) {
-        container.appendChild(node);
-        return;
+        settle(node);
+      } else {
+        node.style.animationDelay = (i * step) + 'ms';
+        node.addEventListener('animationend', function () { settle(node); }, { once: true });
       }
-      node.style.animationDelay = (i * (stepMs || 120)) + 'ms';
       container.appendChild(node);
     });
+
+    if (!reduced) {
+      setTimeout(function () { nodes.forEach(settle); }, nodes.length * step + 900);
+    }
   }
 
   /** Show the shuffle overlay for `durationMs`, then run `done`. */
