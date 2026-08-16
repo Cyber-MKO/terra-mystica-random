@@ -97,8 +97,13 @@
     card.style.setProperty('--terrain-color', terrainColor(assignment.terrain));
 
     var art = el('div', 'art');
-    art.appendChild(el('span', 'initials', initials(f.name)));
-    art.appendChild(optionalImage(imageCandidates('assets/factions', f), f.name + ' artwork'));
+    var placeholder = el('span', 'initials', initials(f.name));
+    art.appendChild(placeholder);
+    var portrait = optionalImage(imageCandidates('assets/factions', f), f.name + ' artwork');
+    // Artwork with transparency (the faction portraits) would otherwise sit
+    // on top of the initials, so drop them as soon as any art loads.
+    portrait.addEventListener('load', function () { placeholder.remove(); });
+    art.appendChild(portrait);
     card.appendChild(art);
 
     var meta = el('div', 'meta');

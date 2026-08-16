@@ -1,10 +1,15 @@
 # Artwork assets
 
-The app ships **without** copyrighted artwork: every card renders a styled,
-terrain-colored placeholder. If you own the game (or have rights to use the
-images), drop image files into these folders and the app picks them up
-automatically — no code changes needed. A missing file simply keeps the
-placeholder.
+Artwork in this folder was added by the repository owner from their own
+copies of the game and its rulebooks; it remains © Feuerland Spiele /
+Capstone Games (illustrations by Dennis Lohausen). The app itself requires
+none of it — anything absent falls back to a styled, terrain-colored
+placeholder. To add or replace art, drop image files into these folders and
+the app picks them up automatically, with no code changes.
+
+The Fan Factions portraits are the faction emblems from the official Fan
+Factions rulebook, cut out on a transparent background so the card's terrain
+color shows around them.
 
 **Accepted formats:** `.png`, `.jpg`, `.jpeg` and `.webp` — mix them freely,
 the app tries each format until one loads.
