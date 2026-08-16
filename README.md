@@ -6,8 +6,9 @@ and — optionally — the game board. All randomization runs client-side with
 cryptographically unbiased randomness, wrapped in a short dramatic reveal.
 
 > Unofficial fan tool. Terra Mystica is © Feuerland Spiele /
-> Helge Ostertag & Jens Drögemüller. No copyrighted artwork is included —
-> see [Artwork](#artwork) for how to drop in your own images.
+> Helge Ostertag & Jens Drögemüller; artwork by Dennis Lohausen. The app
+> needs no artwork to run — anything absent falls back to a styled
+> placeholder. See [Artwork](#artwork).
 
 ## Features
 
@@ -43,7 +44,8 @@ cryptographically unbiased randomness, wrapped in a short dramatic reveal.
   Archivists are in play, per their setup rule; the count also adjusts
   automatically when a faction reroll adds or removes them).
 - **Board** — optionally pick from the original board, the Fire & Ice board
-  and fan maps (Loon Lakes, Fjords).
+  and fan maps (Loon Lakes, Fjords). The two fan maps ship without artwork;
+  drop `loonlakes.*` / `fjords.*` into `assets/boards/` to add it.
 - **Rerolls** — **Reroll everything** redraws the whole setup (factions,
   tiles, cards and board) with the full reveal animation, keeping the same
   players and options. Or reroll just one part: all factions, a single
@@ -54,6 +56,10 @@ cryptographically unbiased randomness, wrapped in a short dramatic reveal.
   effects (muted by default).
 - **Unbiased randomness** — `crypto.getRandomValues` with rejection
   sampling and Fisher–Yates shuffling (`js/random.js`).
+- **Languages** — the interface is available in English, German, French and
+  Spanish, picked from the header and remembered between visits (it also
+  follows the browser's language on a first visit). Switching re-renders a
+  result already on screen. See [Translations](#translations).
 
 ## Running it
 
@@ -103,10 +109,29 @@ CloudFront (`aws s3 sync . s3://<bucket> --exclude ".git/*"`).
 
 ## Artwork
 
-The app renders styled, terrain-colored placeholders out of the box. To use
-original images, drop JPGs into the `assets/` folders using the naming
-scheme described in [`assets/README.md`](assets/README.md) — files are
-picked up automatically, and missing files fall back to placeholders.
+Cards fall back to styled, terrain-colored placeholders wherever artwork is
+absent. To add images, drop `.png`, `.jpg`, `.jpeg` or `.webp` files into
+the `assets/` folders using the naming scheme in
+[`assets/README.md`](assets/README.md) — they are picked up automatically,
+with no code changes. Artwork committed to this repository was added by the
+repository owner from their own copies of the game and its rulebooks.
+
+## Translations
+
+All interface text lives in [`js/i18n.js`](js/i18n.js) as plain key/value
+objects. Missing keys fall back to English, so a partial translation is
+always safe. To add a language, add an entry to `LANGUAGES` (id + native
+name) and an object to `STRINGS` with whatever you can translate — no other
+file changes.
+
+The interface, terrain names and board names are translated. **Faction
+names and the scoring-tile / bonus-card texts intentionally stay in
+English**: they identify physical components, and shipping invented
+translations would be worse than showing them as printed. They are already
+keyed — `faction.<id>`, `tile.<id>.action`, `tile.<id>.cult`, `bonus.<id>` —
+so if you have an edition in hand you can add the official wording to a
+language object and it will be used immediately. Artwork lookup always uses
+the untranslated name, so translations never change which image loads.
 
 ## Extending the data
 
@@ -132,6 +157,7 @@ restrictions).
 ```
 index.html            app shell (two screens + reveal overlay)
 css/style.css         responsive styling, animations, terrain colors
+js/i18n.js            interface translations (en/de/fr/es) + language switch
 js/random.js          crypto-backed unbiased RNG (randInt/shuffle/sample)
 js/data.js            factions, terrains, tiles, cards, boards
 js/randomizer.js      pure selection logic (validation, backtracking, picks)

@@ -33,7 +33,27 @@ body {
 main { max-width: 960px; margin: 0 auto; padding: 0 1rem 3rem; }
 
 /* ---------- header / footer ---------- */
-.site-header { text-align: center; padding: 2rem 1rem 1rem; }
+.site-header { text-align: center; padding: 2rem 1rem 1rem; position: relative; }
+.lang-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  max-width: 960px;
+  margin: -0.9rem auto 0.8rem;
+}
+.lang-label { color: var(--ink-dim); font-size: 0.8rem; }
+.lang-select {
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 7px;
+  border: 1px solid var(--panel-edge);
+  background: #171220;
+  color: var(--ink);
+  cursor: pointer;
+}
+.lang-select:focus { outline: 2px solid var(--accent-dark); }
 .site-header h1 {
   margin: 0;
   font-size: clamp(1.8rem, 5vw, 2.8rem);

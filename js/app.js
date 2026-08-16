@@ -8,6 +8,8 @@
   var D = global.TMData;
   var L = global.TMLogic;
   var UI = global.TMUI;
+  var I18N = global.TMI18n;
+  var t = function (key, params, fallback) { return I18N.t(key, params, fallback); };
 
   var REVEAL_MS = 2600; // total suspense animation, within the 2–4s budget
 
@@ -37,7 +39,7 @@
   function playerNames() {
     if (!nameMode) {
       var out = [];
-      for (var i = 1; i <= playerCount; i++) out.push('Player ' + i);
+      for (var i = 1; i <= playerCount; i++) out.push(t('setup.seatLabel', { n: i }));
       return out;
     }
     return playerInputs().map(function (i) { return i.value.trim(); });
@@ -47,14 +49,14 @@
     var row = UI.el('div', 'player-row');
     var input = UI.el('input');
     input.type = 'text';
-    input.placeholder = 'Player ' + (playerList.children.length + 1) + ' name';
+    input.placeholder = t('setup.playerPlaceholder', { n: playerList.children.length + 1 });
     input.value = name || '';
     input.maxLength = 30;
     row.appendChild(input);
 
     var remove = UI.el('button', 'btn btn-icon remove', '✕');
     remove.type = 'button';
-    remove.title = 'Remove player';
+    remove.title = t('setup.removePlayer');
     remove.addEventListener('click', function () {
       if (playerList.children.length > D.MIN_PLAYERS) {
         row.remove();
@@ -142,8 +144,7 @@
   function refreshCapacityHint() {
     var hint = document.getElementById('capacity-hint');
     var capacity = L.poolCapacity(enabledPool(), currentOptions());
-    hint.textContent = 'Enabled pool supports up to ' +
-      Math.min(capacity, D.MAX_PLAYERS) + ' player(s).';
+    hint.textContent = t('setup.capacity', { n: Math.min(capacity, D.MAX_PLAYERS) });
   }
 
   function buildGroupUI(group) {
@@ -153,9 +154,9 @@
     var head = UI.el('div', 'group-head');
     var master = UI.el('input');
     master.type = 'checkbox';
-    master.title = 'Enable/disable whole group';
+    master.title = t('setup.pools.groupToggle');
     head.appendChild(master);
-    head.appendChild(UI.el('span', 'group-name', group.name));
+    head.appendChild(UI.el('span', 'group-name', t('group.' + group.id, null, group.name)));
     var count = UI.el('span', 'count');
     head.appendChild(count);
     head.appendChild(UI.el('span', 'chev', '▸'));
@@ -169,7 +170,8 @@
       var dot = UI.el('span', 'dot');
       dot.style.background = f.terrain ? UI.terrainColor(f.terrain) : 'linear-gradient(135deg,#7ec8e3 50%,#b03a2e 50%)';
       chip.appendChild(dot);
-      chip.appendChild(document.createTextNode(f.name + (f.special ? ' · ' + f.special : '')));
+      chip.appendChild(document.createTextNode(
+        UI.factionName(f) + (f.special ? ' · ' + t('special.' + f.special.toLowerCase()) : '')));
       function sync() {
         chip.classList.toggle('on', !!factionEnabled[f.id]);
         chip.setAttribute('aria-checked', String(!!factionEnabled[f.id]));
@@ -232,7 +234,9 @@
     if (!errors.length) { box.hidden = true; return; }
     box.innerHTML = '';
     var ul = UI.el('ul');
-    errors.forEach(function (msg) { ul.appendChild(UI.el('li', null, msg)); });
+    errors.forEach(function (e) {
+      ul.appendChild(UI.el('li', null, typeof e === 'string' ? e : t(e.key, e.params)));
+    });
     box.appendChild(ul);
     box.hidden = false;
     box.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -272,8 +276,6 @@
     };
   }
 
-  var NO_ASSIGNMENT_MSG = 'Could not find a legal faction assignment for this pool — ' +
-    'enable more factions or relax the strict terrain lock.';
 
   document.getElementById('randomize').addEventListener('click', function () {
     var names = playerNames();
@@ -285,7 +287,7 @@
     showErrors([]);
 
     var next = rollGame(names, options, pool);
-    if (!next) { showErrors([NO_ASSIGNMENT_MSG]); return; }
+    if (!next) { showErrors([{ key: 'err.noAssignment' }]); return; }
     game = next;
 
     UI.playRevealAnimation(REVEAL_MS, function () {
@@ -403,4 +405,53 @@
 
   addPlayerRow();
   addPlayerRow();
+
+  /* =================================================================== *
+   * Language
+   * =================================================================== */
+
+  var langSelect = document.getElementById('lang-select');
+  I18N.LANGUAGES.forEach(function (lang) {
+    var opt = UI.el('option', null, lang.name);
+    opt.value = lang.id;
+    langSelect.appendChild(opt);
+  });
+  langSelect.value = I18N.getLanguage();
+  langSelect.addEventListener('change', function () {
+    I18N.setLanguage(langSelect.value);
+  });
+
+  /**
+   * Re-render everything that holds translated text: the static markup, the
+   * player rows, the faction pool list (rebuilt, keeping the enabled flags,
+   * which live in factionEnabled) and any results already on screen.
+   */
+  I18N.onChange(function () {
+    I18N.applyStatic();
+
+    playerInputs().forEach(function (input, i) {
+      input.placeholder = t('setup.playerPlaceholder', { n: i + 1 });
+    });
+    playerList.querySelectorAll('.remove').forEach(function (b) {
+      b.title = t('setup.removePlayer');
+    });
+
+    var openGroups = {};
+    Array.prototype.forEach.call(groupsRoot.children, function (node, i) {
+      openGroups[i] = node.classList.contains('open');
+    });
+    groupsRoot.innerHTML = '';
+    Object.keys(D.FACTION_GROUPS).forEach(function (id, i) {
+      var node = buildGroupUI(D.FACTION_GROUPS[id]);
+      if (openGroups[i]) node.classList.add('open');
+      groupsRoot.appendChild(node);
+    });
+
+    refreshCapacityHint();
+    if (game && !document.getElementById('result-screen').hidden) renderResults();
+  });
+
+  I18N.applyStatic();
+  document.documentElement.lang = I18N.getLanguage();
+  refreshCapacityHint();
 })(window);

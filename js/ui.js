@@ -10,6 +10,7 @@
   'use strict';
 
   var D = global.TMData;
+  var t = function (key, params, fallback) { return global.TMI18n.t(key, params, fallback); };
 
   /** Image formats accepted for drop-in artwork, tried in this order. */
   var IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'webp'];
@@ -81,9 +82,22 @@
   }
 
   function terrainColor(terrainId) {
-    var t = D.TERRAINS[terrainId];
-    return t ? t.color : '#555';
+    var terrain = D.TERRAINS[terrainId];
+    return terrain ? terrain.color : '#555';
   }
+
+  /** Translated terrain name, falling back to the id's English name. */
+  function terrainName(terrainId) {
+    var terrain = D.TERRAINS[terrainId];
+    return terrain ? t('terrain.' + terrainId, null, terrain.name) : terrainId;
+  }
+
+  // Faction and board names fall back to the English name in js/data.js
+  // when a language has no translation for them. Note that artwork lookup
+  // always uses the untranslated name, so switching language never changes
+  // which image file is requested.
+  function factionName(f) { return t('faction.' + f.id, null, f.name); }
+  function boardName(b) { return t('board.' + b.id, null, b.name); }
 
   /* ---------------- faction result card ---------------- */
 
@@ -97,7 +111,7 @@
     card.style.setProperty('--terrain-color', terrainColor(assignment.terrain));
 
     var art = el('div', 'art');
-    var placeholder = el('span', 'initials', initials(f.name));
+    var placeholder = el('span', 'initials', initials(factionName(f)));
     art.appendChild(placeholder);
     var portrait = optionalImage(imageCandidates('assets/factions', f), f.name + ' artwork');
     // Artwork with transparency (the faction portraits) would otherwise sit
@@ -108,23 +122,24 @@
 
     var meta = el('div', 'meta');
     meta.appendChild(el('p', 'player-name', assignment.player));
-    meta.appendChild(el('h3', 'faction-name', f.name));
+    meta.appendChild(el('h3', 'faction-name', factionName(f)));
 
     var chip = el('span', 'terrain-chip');
     var dot = el('span', 'dot');
     dot.style.background = terrainColor(assignment.terrain);
     chip.appendChild(dot);
-    var terrainName = D.TERRAINS[assignment.terrain].name;
+    var land = terrainName(assignment.terrain);
     chip.appendChild(document.createTextNode(
-      f.special ? f.special + ' · home: ' + terrainName : terrainName
+      f.special ? t('special.' + f.special.toLowerCase()) + ' · ' + t('result.home') + ': ' + land
+                : land
     ));
     meta.appendChild(chip);
 
     if (onReroll) {
       var actions = el('div', 'actions');
-      var btn = el('button', 'btn btn-icon', '🎲 Reroll');
+      var btn = el('button', 'btn btn-icon', t('action.reroll'));
       btn.type = 'button';
-      btn.title = 'Reroll ' + assignment.player + "'s faction";
+      btn.title = t('action.rerollSeat', { player: assignment.player });
       btn.addEventListener('click', onReroll);
       actions.appendChild(btn);
       meta.appendChild(actions);
@@ -138,9 +153,10 @@
   // Landscape rectangle, like the physical scoring tiles (~300x165).
   function scoringTile(tile, roundNumber) {
     var node = el('div', 'tile tile-score flip-in');
-    node.appendChild(el('p', 'round-label', 'Round ' + roundNumber));
-    node.appendChild(el('p', 'tile-main', tile.action));
-    node.appendChild(el('p', 'tile-sub', 'Cult: ' + tile.cult));
+    node.appendChild(el('p', 'round-label', t('result.round', { n: roundNumber })));
+    node.appendChild(el('p', 'tile-main', t('tile.' + tile.id + '.action', null, tile.action)));
+    node.appendChild(el('p', 'tile-sub',
+      t('result.cult', { text: t('tile.' + tile.id + '.cult', null, tile.cult) })));
     node.appendChild(optionalImage(imageCandidates('assets/tiles', tile), 'Scoring tile ' + tile.id));
     return node;
   }
@@ -149,16 +165,16 @@
   function bonusCard(card) {
     var node = el('div', 'tile tile-tall flip-in');
     node.appendChild(el('p', 'round-label', card.id.toUpperCase()));
-    node.appendChild(el('p', 'tile-main', card.text));
+    node.appendChild(el('p', 'tile-main', t('bonus.' + card.id, null, card.text)));
     node.appendChild(optionalImage(imageCandidates('assets/bonus', card), 'Bonus card ' + card.id));
     return node;
   }
 
   function boardCard(board) {
     var node = el('div', 'tile flip-in');
-    node.appendChild(el('p', 'round-label', 'Game board'));
-    node.appendChild(el('p', 'tile-main', board.name));
-    node.appendChild(optionalImage(imageCandidates('assets/boards', board), board.name));
+    node.appendChild(el('p', 'round-label', t('result.boardLabel')));
+    node.appendChild(el('p', 'tile-main', boardName(board)));
+    node.appendChild(optionalImage(imageCandidates('assets/boards', board), boardName(board)));
     return node;
   }
 
@@ -224,6 +240,9 @@
 
   global.TMUI = {
     el: el,
+    terrainName: terrainName,
+    factionName: factionName,
+    boardName: boardName,
     factionCard: factionCard,
     scoringTile: scoringTile,
     bonusCard: bonusCard,

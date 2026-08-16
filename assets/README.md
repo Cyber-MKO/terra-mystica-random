@@ -25,6 +25,11 @@ the app tries each format until one loads.
 lowercase id (`chaosmagicians.png`) and the display name with spaces removed
 (`ChaosMagicians.png`) are recognised, so either export convention works.
 
+**Still missing:** `boards/loonlakes.*` and `boards/fjords.*` — the two
+fan maps. Everything else (all 40 factions, all 9 scoring tiles, all 10
+bonus cards, both official boards) has artwork. Until those two files are
+added, those boards show a text card with the map name.
+
 **Any other file name:** add an `image` value to the entry in
 [`js/data.js`](../js/data.js) and it is used as-is, e.g.
 `{ id: 'nomads', name: 'Nomads', image: 'nomads-alt-art.png', … }`.

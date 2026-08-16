@@ -247,36 +247,38 @@
    * ------------------------------------------------------------------ */
 
   /**
-   * Validate a setup before randomizing. Returns an array of human-readable
-   * error strings (empty = valid).
+   * Validate a setup before randomizing.
+   *
+   * Returns an array of `{ key, params }` problems (empty = valid). Keys are
+   * translation ids resolved by the caller, so this stays language-agnostic.
    */
   function validateSetup(players, pool, options) {
     var errors = [];
     var names = players.map(function (p) { return p.trim(); });
 
     if (names.length < D.MIN_PLAYERS) {
-      errors.push('At least ' + D.MIN_PLAYERS + ' players are required.');
+      errors.push({ key: 'err.minPlayers', params: { n: D.MIN_PLAYERS } });
     }
     if (names.length > D.MAX_PLAYERS) {
-      errors.push('At most ' + D.MAX_PLAYERS + ' players are supported.');
+      errors.push({ key: 'err.maxPlayers', params: { n: D.MAX_PLAYERS } });
     }
     if (names.some(function (n) { return !n; })) {
-      errors.push('Every player needs a name.');
+      errors.push({ key: 'err.emptyName' });
     }
     var lower = names.map(function (n) { return n.toLowerCase(); });
     var dupes = lower.filter(function (n, i) { return n && lower.indexOf(n) !== i; });
     if (dupes.length) {
-      errors.push('Player names must be unique.');
+      errors.push({ key: 'err.duplicateNames' });
     }
     if (!pool.length) {
-      errors.push('No factions are enabled — enable at least one faction group.');
+      errors.push({ key: 'err.noFactions' });
     } else {
       var capacity = poolCapacity(pool, options);
       if (capacity < names.length) {
-        errors.push('The enabled faction pool only supports ' + capacity +
-          ' player(s) (exclusivity' + (options && options.strictTerrain ? ' and terrain-lock' : '') +
-          ' rules included) but ' + names.length + ' players are set up. ' +
-          'Enable more factions or remove players.');
+        errors.push({
+          key: (options && options.strictTerrain) ? 'err.capacityStrict' : 'err.capacity',
+          params: { capacity: capacity, players: names.length }
+        });
       }
     }
     return errors;
