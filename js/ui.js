@@ -84,8 +84,9 @@
 
   /* ---------------- tiles / cards / board ---------------- */
 
+  // Square, like the physical scoring tiles.
   function scoringTile(tile, roundNumber) {
-    var node = el('div', 'tile flip-in');
+    var node = el('div', 'tile tile-square flip-in');
     node.appendChild(el('p', 'round-label', 'Round ' + roundNumber));
     node.appendChild(el('p', 'tile-main', tile.action));
     node.appendChild(el('p', 'tile-sub', 'Cult: ' + tile.cult));
@@ -93,8 +94,9 @@
     return node;
   }
 
+  // Tall narrow strip, like the physical bonus cards (~45x126 mm).
   function bonusCard(card) {
-    var node = el('div', 'tile flip-in');
+    var node = el('div', 'tile tile-tall flip-in');
     node.appendChild(el('p', 'round-label', card.id.toUpperCase()));
     node.appendChild(el('p', 'tile-main', card.text));
     node.appendChild(optionalImage('assets/bonus/' + card.id + '.jpg', 'Bonus card ' + card.id));

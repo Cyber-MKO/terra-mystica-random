@@ -309,6 +309,46 @@ main { max-width: 960px; margin: 0 auto; padding: 0 1rem 3rem; }
   min-height: 92px;
   overflow: hidden;
 }
+
+/* Scoring tiles are square in the physical game. Fixed-width columns keep
+   them tile-sized instead of stretching to fill the row. */
+#result-tiles {
+  grid-template-columns: repeat(auto-fill, 136px);
+  justify-content: flex-start;
+}
+.tile.tile-square {
+  aspect-ratio: 1 / 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.tile.tile-square .tile-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  font-size: 0.88rem;
+}
+.tile.tile-square .tile-sub { font-size: 0.74rem; }
+
+/* Bonus cards are tall narrow strips (~45x126 mm) in the physical game. */
+#result-bonus {
+  grid-template-columns: repeat(auto-fill, 106px);
+  justify-content: flex-start;
+}
+.tile.tile-tall {
+  aspect-ratio: 45 / 126;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0.6rem 0.6rem;
+}
+.tile.tile-tall .tile-main { font-size: 0.78rem; }
+
+@media (max-width: 480px) {
+  #result-tiles { grid-template-columns: repeat(auto-fill, 118px); }
+  #result-bonus { grid-template-columns: repeat(auto-fill, 92px); }
+  .tile.tile-tall .tile-main { font-size: 0.72rem; }
+}
 .tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .tile .round-label {
   font-size: 0.72rem;
@@ -317,8 +357,18 @@ main { max-width: 960px; margin: 0 auto; padding: 0 1rem 3rem; }
   color: var(--accent);
   margin: 0 0 0.3rem;
 }
-.tile .tile-main { margin: 0; font-size: 0.92rem; font-weight: bold; }
-.tile .tile-sub { margin: 0.3rem 0 0; font-size: 0.8rem; color: var(--ink-dim); }
+.tile .tile-main {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: bold;
+  overflow-wrap: anywhere;
+}
+.tile .tile-sub {
+  margin: 0.3rem 0 0;
+  font-size: 0.8rem;
+  color: var(--ink-dim);
+  overflow-wrap: anywhere;
+}
 .board-result {
   display: flex;
   align-items: center;

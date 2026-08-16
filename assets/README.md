@@ -19,6 +19,8 @@ plus Fan Factions expansion ids like `architects`, `djinn`, `snowshamans`;
 scoring tiles `score1`–`score9`; bonus cards `bon1`–`bon10`; boards
 `original`, `fireice`, `loonlakes`, `fjords`).
 
-Recommended sizes: factions ~400×300px, tiles/cards ~300×200px,
-boards ~600×400px. Any aspect ratio works — images are cropped with
-`object-fit: cover`.
+Recommended sizes (matching the physical component shapes the app now
+renders): factions ~400×300px, scoring tiles ~300×300px (square),
+bonus cards ~215×600px (tall strip, like the real ~45×126 mm cards),
+boards ~600×400px. Other aspect ratios still work — images are cropped
+with `object-fit: cover`.
