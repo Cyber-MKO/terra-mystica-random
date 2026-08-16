@@ -11,7 +11,10 @@ cryptographically unbiased randomness, wrapped in a short dramatic reveal.
 
 ## Features
 
-- **Players** — 2–5 players (names must be non-empty and unique).
+- **Players** — two ways to set up:
+  - **Enter names** — 2–5 named players (names must be non-empty and unique).
+  - **Player count only** — skip typing entirely: pick 2–5 and randomize;
+    seats are labelled Player 1–N.
 - **Faction pools** — toggle groups or expand a group and include/exclude
   individual factions:
   - Base game (14 factions)
@@ -41,8 +44,11 @@ cryptographically unbiased randomness, wrapped in a short dramatic reveal.
   automatically when a faction reroll adds or removes them).
 - **Board** — optionally pick from the original board, the Fire & Ice board
   and fan maps (Loon Lakes, Fjords).
-- **Rerolls** — reroll all factions, a single player's faction, the scoring
-  tiles, the bonus cards or the board individually; "New game" resets.
+- **Rerolls** — **Reroll everything** redraws the whole setup (factions,
+  tiles, cards and board) with the full reveal animation, keeping the same
+  players and options. Or reroll just one part: all factions, a single
+  player's faction, the scoring tiles, the bonus cards or the board.
+  "New game" returns to the setup screen.
 - **Reveal animation** — ~2.6 s card shuffle + staggered flip-in reveal
   (skipped for `prefers-reduced-motion`), with optional synthesized sound
   effects (muted by default).

@@ -6,7 +6,7 @@
   <title>Terra Mystica Randomizer</title>
   <meta name="description" content="Randomize factions, scoring tiles, bonus cards and boards for Terra Mystica.">
   <!-- Bump ?v= on each release so browsers/CDNs fetch fresh assets. -->
-  <link rel="stylesheet" href="css/style.css?v=8">
+  <link rel="stylesheet" href="css/style.css?v=9">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%94%EF%B8%8F%3C/text%3E%3C/svg%3E">
 </head>
 <body>
@@ -21,12 +21,26 @@
 
       <div class="panel">
         <h2>1 · Players</h2>
-        <p class="hint">2–5 players. All names must be non-empty and unique.</p>
-        <div id="player-list" class="player-list"></div>
-        <div class="row">
-          <button id="add-player" class="btn btn-secondary" type="button">+ Add player</button>
-          <span id="capacity-hint" class="capacity-hint"></span>
+
+        <div class="mode-switch" role="group" aria-label="How to set up players">
+          <button id="mode-names" class="mode-btn on" type="button" aria-pressed="true">Enter names</button>
+          <button id="mode-count" class="mode-btn" type="button" aria-pressed="false">Player count only</button>
         </div>
+
+        <div id="names-pane">
+          <p class="hint">2–5 players. All names must be non-empty and unique.</p>
+          <div id="player-list" class="player-list"></div>
+          <div class="row">
+            <button id="add-player" class="btn btn-secondary" type="button">+ Add player</button>
+          </div>
+        </div>
+
+        <div id="count-pane" hidden>
+          <p class="hint">Just pick how many are playing — seats are labelled Player 1–N.</p>
+          <div id="count-picker" class="count-picker"></div>
+        </div>
+
+        <p id="capacity-hint" class="capacity-hint"></p>
       </div>
 
       <div class="panel">
@@ -107,7 +121,10 @@
         <div id="result-board" class="board-result"></div>
       </div>
 
-      <button id="new-game" class="btn btn-primary btn-big" type="button">↩️ New game</button>
+      <div class="result-actions">
+        <button id="reroll-all" class="btn btn-primary btn-big" type="button">🎲 Reroll everything</button>
+        <button id="new-game" class="btn btn-secondary btn-big" type="button">↩️ New game</button>
+      </div>
     </section>
   </main>
 
@@ -116,11 +133,11 @@
        Drop official artwork into <code>assets/</code> to replace the placeholders — see the README.</p>
   </footer>
 
-  <script src="js/random.js?v=8"></script>
-  <script src="js/data.js?v=8"></script>
-  <script src="js/randomizer.js?v=8"></script>
-  <script src="js/sound.js?v=8"></script>
-  <script src="js/ui.js?v=8"></script>
-  <script src="js/app.js?v=8"></script>
+  <script src="js/random.js?v=9"></script>
+  <script src="js/data.js?v=9"></script>
+  <script src="js/randomizer.js?v=9"></script>
+  <script src="js/sound.js?v=9"></script>
+  <script src="js/ui.js?v=9"></script>
+  <script src="js/app.js?v=9"></script>
 </body>
 </html>

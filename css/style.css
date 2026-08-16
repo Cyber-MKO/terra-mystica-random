@@ -94,10 +94,64 @@ main { max-width: 960px; margin: 0 auto; padding: 0 1rem 3rem; }
 }
 .btn-primary:hover { filter: brightness(1.08); background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dark) 100%); }
 .btn-big { display: block; width: 100%; padding: 0.9rem; font-size: 1.15rem; margin-top: 0.5rem; }
+/* Reroll-everything / New game pair at the foot of the results screen. */
+.result-actions { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+.result-actions .btn-big { flex: 1 1 220px; width: auto; }
 .btn-icon {
   padding: 0.25rem 0.55rem;
   font-size: 0.85rem;
   line-height: 1;
+}
+
+/* ---------- setup mode switch + count picker ---------- */
+.mode-switch {
+  display: flex;
+  gap: 0.35rem;
+  background: #171220;
+  border: 1px solid var(--panel-edge);
+  border-radius: 10px;
+  padding: 0.28rem;
+  margin-bottom: 0.9rem;
+}
+.mode-btn {
+  flex: 1;
+  font-family: inherit;
+  font-size: 0.92rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ink-dim);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.mode-btn:hover { color: var(--ink); }
+.mode-btn.on {
+  background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dark) 100%);
+  border-color: var(--accent-dark);
+  color: #241a05;
+  font-weight: bold;
+}
+.count-picker { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.count-btn {
+  font-family: inherit;
+  font-size: 1.15rem;
+  min-width: 3.1rem;
+  padding: 0.6rem 0;
+  border-radius: 9px;
+  border: 1px solid var(--panel-edge);
+  background: #171220;
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform 0.1s ease, border-color 0.15s ease, background 0.15s ease;
+}
+.count-btn:hover { background: #241d2c; }
+.count-btn:active { transform: scale(0.96); }
+.count-btn.on {
+  background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dark) 100%);
+  border-color: var(--accent-dark);
+  color: #241a05;
+  font-weight: bold;
 }
 
 /* ---------- player setup ---------- */

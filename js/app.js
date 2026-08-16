@@ -30,7 +30,16 @@
     return Array.prototype.slice.call(playerList.querySelectorAll('input[type="text"]'));
   }
 
+  /**
+   * Seat labels for the current setup mode: the typed names in "names" mode,
+   * or generated "Player N" labels when only a player count was chosen.
+   */
   function playerNames() {
+    if (!nameMode) {
+      var out = [];
+      for (var i = 1; i <= playerCount; i++) out.push('Player ' + i);
+      return out;
+    }
     return playerInputs().map(function (i) { return i.value.trim(); });
   }
 
@@ -60,6 +69,56 @@
   document.getElementById('add-player').addEventListener('click', function () {
     if (playerList.children.length >= D.MAX_PLAYERS) return;
     addPlayerRow();
+  });
+
+  /* ---------------- setup mode: names vs. player count ---------------- */
+
+  var nameMode = true;       // true = type names, false = pick a count only
+  var playerCount = 4;       // used in count mode
+
+  var namesPane = document.getElementById('names-pane');
+  var countPane = document.getElementById('count-pane');
+  var btnNames = document.getElementById('mode-names');
+  var btnCount = document.getElementById('mode-count');
+
+  function setMode(useNames) {
+    nameMode = useNames;
+    namesPane.hidden = !useNames;
+    countPane.hidden = useNames;
+    btnNames.classList.toggle('on', useNames);
+    btnCount.classList.toggle('on', !useNames);
+    btnNames.setAttribute('aria-pressed', String(useNames));
+    btnCount.setAttribute('aria-pressed', String(!useNames));
+    showErrors([]);
+    refreshCapacityHint();
+  }
+  btnNames.addEventListener('click', function () { setMode(true); });
+  btnCount.addEventListener('click', function () { setMode(false); });
+
+  // Player-count buttons (MIN_PLAYERS..MAX_PLAYERS).
+  var countPicker = document.getElementById('count-picker');
+  var countButtons = [];
+  for (var n = D.MIN_PLAYERS; n <= D.MAX_PLAYERS; n++) {
+    (function (value) {
+      var b = UI.el('button', 'count-btn', String(value));
+      b.type = 'button';
+      b.setAttribute('aria-label', value + ' players');
+      b.addEventListener('click', function () {
+        playerCount = value;
+        countButtons.forEach(function (x) {
+          x.btn.classList.toggle('on', x.value === value);
+          x.btn.setAttribute('aria-pressed', String(x.value === value));
+        });
+        showErrors([]);
+        refreshCapacityHint();
+      });
+      countPicker.appendChild(b);
+      countButtons.push({ value: value, btn: b });
+    })(n);
+  }
+  countButtons.forEach(function (x) {
+    x.btn.classList.toggle('on', x.value === playerCount);
+    x.btn.setAttribute('aria-pressed', String(x.value === playerCount));
   });
 
   /* =================================================================== *
@@ -190,24 +249,18 @@
     };
   }
 
-  document.getElementById('randomize').addEventListener('click', function () {
-    var names = playerNames();
-    var options = currentOptions();
-    var pool = enabledPool();
-
-    var errors = L.validateSetup(names, pool, options);
-    if (errors.length) { showErrors(errors); return; }
-    showErrors([]);
-
+  /**
+   * Draw every part of a setup at once: factions, scoring tiles, bonus
+   * cards and (when enabled) the board.
+   *
+   * @returns {Object|null} a full game state, or null when no legal faction
+   *                        assignment exists for the pool.
+   */
+  function rollGame(names, options, pool) {
     var assignments = L.assignFactions(names, pool, options);
-    if (!assignments) {
-      showErrors(['Could not find a legal faction assignment for this pool — ' +
-        'enable more factions or relax the strict terrain lock.']);
-      return;
-    }
-
+    if (!assignments) return null;
     var pools = tilePools(options);
-    game = {
+    return {
       names: names,
       options: options,
       pool: pool,
@@ -217,6 +270,23 @@
       bonusCards: L.pickBonusCards(pools.bonus, names.length, assignments),
       board: options.randomBoard ? L.pickBoard(pools.boards) : null
     };
+  }
+
+  var NO_ASSIGNMENT_MSG = 'Could not find a legal faction assignment for this pool — ' +
+    'enable more factions or relax the strict terrain lock.';
+
+  document.getElementById('randomize').addEventListener('click', function () {
+    var names = playerNames();
+    var options = currentOptions();
+    var pool = enabledPool();
+
+    var errors = L.validateSetup(names, pool, options);
+    if (errors.length) { showErrors(errors); return; }
+    showErrors([]);
+
+    var next = rollGame(names, options, pool);
+    if (!next) { showErrors([NO_ASSIGNMENT_MSG]); return; }
+    game = next;
 
     UI.playRevealAnimation(REVEAL_MS, function () {
       document.getElementById('setup-screen').hidden = true;
@@ -307,6 +377,18 @@
     game.board = L.pickBoard(game.pools.boards);
     global.TMSound.reveal();
     renderBoard();
+  });
+
+  // Redraw the entire setup — same players, pools and options — with the
+  // full suspense animation, as if "Randomize" had been pressed again.
+  document.getElementById('reroll-all').addEventListener('click', function () {
+    var next = rollGame(game.names, game.options, game.pool);
+    if (!next) return;   // pool was already proven solvable, so this is rare
+    game = next;
+    UI.playRevealAnimation(REVEAL_MS, function () {
+      renderResults();
+      global.scrollTo({ top: 0 });
+    });
   });
 
   document.getElementById('new-game').addEventListener('click', function () {
