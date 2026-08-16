@@ -221,9 +221,11 @@
 
   document.getElementById('opt-strict-terrain')
     .addEventListener('change', refreshCapacityHint);
-  document.getElementById('opt-sound').addEventListener('change', function (e) {
+  var soundToggle = document.getElementById('opt-sound');
+  soundToggle.addEventListener('change', function (e) {
     global.TMSound.setEnabled(e.target.checked);
   });
+  global.TMSound.setEnabled(soundToggle.checked);   // honour the default
 
   /* =================================================================== *
    * Randomize flow

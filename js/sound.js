@@ -57,6 +57,9 @@
   global.TMSound = {
     tick: tick,
     reveal: reveal,
-    setEnabled: function (on) { enabled = !!on; if (on) ensureCtx(); }
+    // The audio context is created lazily by the first tick/reveal rather
+    // than here: sound is on by default, and building a context before any
+    // user gesture would just be created suspended (and warned about).
+    setEnabled: function (on) { enabled = !!on; }
   };
 })(window);

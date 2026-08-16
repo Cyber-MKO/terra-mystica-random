@@ -58,7 +58,7 @@
       'opt.fireice.title': 'Fire & Ice tiles/cards',
       'opt.fireice.desc': ' — include the F&I scoring tile and bonus card',
       'opt.sound.title': 'Sound effects',
-      'opt.sound.desc': ' (muted by default)',
+      'opt.sound.desc': ' — short cues while shuffling and revealing',
 
       'action.randomize': '⚔️ Randomize setup',
       'action.rerollAll': '🎲 Reroll everything',
@@ -151,7 +151,7 @@
       'opt.fireice.title': 'Feuer & Eis Plättchen/Karten',
       'opt.fireice.desc': ' — Wertungsplättchen und Bonuskarte aus Feuer & Eis einbeziehen',
       'opt.sound.title': 'Soundeffekte',
-      'opt.sound.desc': ' (standardmäßig stumm)',
+      'opt.sound.desc': ' — kurze Klänge beim Mischen und Aufdecken',
 
       'action.randomize': '⚔️ Aufbau auslosen',
       'action.rerollAll': '🎲 Alles neu auslosen',
@@ -244,7 +244,7 @@
       'opt.fireice.title': 'Tuiles/cartes Feu & Glace',
       'opt.fireice.desc': ' — inclure la tuile de score et la carte bonus Feu & Glace',
       'opt.sound.title': 'Effets sonores',
-      'opt.sound.desc': ' (coupés par défaut)',
+      'opt.sound.desc': ' — brefs sons pendant le mélange et la révélation',
 
       'action.randomize': '⚔️ Lancer le tirage',
       'action.rerollAll': '🎲 Tout retirer au sort',
@@ -337,7 +337,7 @@
       'opt.fireice.title': 'Losetas/cartas de Fuego y Hielo',
       'opt.fireice.desc': ' — incluir la loseta de puntuación y la carta de bonificación de F&H',
       'opt.sound.title': 'Efectos de sonido',
-      'opt.sound.desc': ' (silenciados por defecto)',
+      'opt.sound.desc': ' — sonidos breves al barajar y revelar',
 
       'action.randomize': '⚔️ Sortear la partida',
       'action.rerollAll': '🎲 Sortear todo de nuevo',

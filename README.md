@@ -52,8 +52,10 @@ cryptographically unbiased randomness, wrapped in a short dramatic reveal.
   player's faction, the scoring tiles, the bonus cards or the board.
   "New game" returns to the setup screen.
 - **Reveal animation** — ~2.6 s card shuffle + staggered flip-in reveal
-  (skipped for `prefers-reduced-motion`), with optional synthesized sound
-  effects (muted by default).
+  (skipped for `prefers-reduced-motion`), with synthesized sound effects
+  that can be switched off.
+- **Defaults** — strict terrain lock, board randomization and sound are on;
+  the Fire & Ice tile/card option is off. All four are toggles in Options.
 - **Unbiased randomness** — `crypto.getRandomValues` with rejection
   sampling and Fisher–Yates shuffling (`js/random.js`).
 - **Languages** — the interface is available in English, German, French and
