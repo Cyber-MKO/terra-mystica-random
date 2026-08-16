@@ -59,10 +59,12 @@ cryptographically unbiased randomness, wrapped in a short dramatic reveal.
   Options.
 - **Unbiased randomness** — `crypto.getRandomValues` with rejection
   sampling and Fisher–Yates shuffling (`js/random.js`).
-- **Languages** — the interface is available in English, German, French and
-  Spanish, picked from the header and remembered between visits (it also
-  follows the browser's language on a first visit). Switching re-renders a
-  result already on screen. See [Translations](#translations).
+- **Languages** — English, German, French, Spanish, Chinese and Russian,
+  picked from the header and remembered between visits (it also follows the
+  browser's language on a first visit). Faction names, terrain names and
+  board names are translated along with the interface, and switching
+  re-renders a result already on screen. See
+  [Translations](#translations).
 
 ## Running it
 
@@ -127,14 +129,18 @@ always safe. To add a language, add an entry to `LANGUAGES` (id + native
 name) and an object to `STRINGS` with whatever you can translate — no other
 file changes.
 
-The interface, terrain names and board names are translated. **Faction
-names and the scoring-tile / bonus-card texts intentionally stay in
-English**: they identify physical components, and shipping invented
-translations would be worse than showing them as printed. They are already
-keyed — `faction.<id>`, `tile.<id>.action`, `tile.<id>.cult`, `bonus.<id>` —
-so if you have an edition in hand you can add the official wording to a
-language object and it will be used immediately. Artwork lookup always uses
-the untranslated name, so translations never change which image loads.
+Faction names live in a separate `FACTION_NAMES` block — one compact object
+per language — merged in as `faction.<id>` keys at load. They are
+translations of the English names rather than verified reproductions of
+every publisher's localized edition; if your edition words one differently,
+correct that single entry and it is used everywhere.
+
+Still English-only: the scoring-tile and bonus-card summary texts. They are
+keyed (`tile.<id>.action`, `tile.<id>.cult`, `bonus.<id>`) and can be added
+to any language object the same way.
+
+Artwork lookup always uses the untranslated name from `js/data.js`, so
+switching language never changes which image file is requested.
 
 ## Extending the data
 
@@ -160,7 +166,7 @@ restrictions).
 ```
 index.html            app shell (two screens + reveal overlay)
 css/style.css         responsive styling, animations, terrain colors
-js/i18n.js            interface translations (en/de/fr/es) + language switch
+js/i18n.js            translations (en/de/fr/es/zh/ru) + language switch
 js/random.js          crypto-backed unbiased RNG (randInt/shuffle/sample)
 js/data.js            factions, terrains, tiles, cards, boards
 js/randomizer.js      pure selection logic (validation, backtracking, picks)

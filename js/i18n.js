@@ -6,16 +6,21 @@
  * only the strings you know and the rest stay in English.
  *
  * To add a language:
- *   1. add an entry to LANGUAGES below (id + native name), and
- *   2. add a matching object to STRINGS with the keys you can translate.
+ *   1. add an entry to LANGUAGES below (id + native name),
+ *   2. add a matching object to STRINGS with the keys you can translate, and
+ *   3. optionally add a block to FACTION_NAMES for the faction names.
  * No other file needs to change.
  *
- * Scope note: the *interface* and terrain names are translated. Faction
- * names, scoring-tile and bonus-card texts deliberately stay in English —
- * they name physical components, and inventing unofficial translations
- * would be worse than leaving them as printed. They are keyed
- * (`faction.<id>`, `tile.<id>.action`, `tile.<id>.cult`, `bonus.<id>`) so
- * anyone with an edition in hand can fill them in the same way.
+ * Scope note: the interface, terrain names and faction names are
+ * translated. Faction names live in FACTION_NAMES (one compact block per
+ * language) and are merged into STRINGS as `faction.<id>` keys at load.
+ * They are translations of the English names, not verified reproductions of
+ * every publisher's localized edition — if your edition words one
+ * differently, correct that one entry and it is used everywhere.
+ *
+ * Scoring-tile and bonus-card texts are still English only. They are keyed
+ * (`tile.<id>.action`, `tile.<id>.cult`, `bonus.<id>`) and can be filled in
+ * the same way.
  */
 (function (global) {
   'use strict';
@@ -24,7 +29,9 @@
     { id: 'en', name: 'English' },
     { id: 'de', name: 'Deutsch' },
     { id: 'fr', name: 'Français' },
-    { id: 'es', name: 'Español' }
+    { id: 'es', name: 'Español' },
+    { id: 'zh', name: '中文' },
+    { id: 'ru', name: 'Русский' }
   ];
 
   var STRINGS = {
@@ -399,8 +406,284 @@
       'footer.notice': 'Herramienta fan no oficial. Terra Mystica es © Feuerland Spiele / ' +
         'Helge Ostertag & Jens Drögemüller. Coloca las ilustraciones oficiales en assets/ ' +
         'para sustituir los marcadores — consulta el README.'
+    },
+
+    /* ------------------------------------------------------------------ */
+    zh: {
+      'app.suffix': '随机器',
+      'app.tagline': '种族 · 地形 · 计分板块 · 奖励卡 · 地图',
+      'app.language': '语言',
+
+      'setup.players': '1 · 玩家',
+      'setup.mode.names': '输入名字',
+      'setup.mode.count': '仅选择人数',
+      'setup.names.hint': '2–5 名玩家。所有名字都必须填写且不重复。',
+      'setup.count.hint': '只需选择游戏人数 — 座位标记为 玩家 1–N。',
+      'setup.seatLabel': '玩家 {n}',
+      'setup.addPlayer': '+ 添加玩家',
+      'setup.playerPlaceholder': '玩家 {n} 的名字',
+      'setup.removePlayer': '移除玩家',
+      'setup.capacity': '当前启用的种族最多支持 {n} 名玩家。',
+
+      'setup.pools': '2 · 种族选择',
+      'setup.pools.hint': '可整组开关，或展开某一组单独包含/排除种族。',
+      'setup.pools.groupToggle': '启用/停用整组',
+
+      'setup.options': '3 · 选项',
+      'opt.strict.title': '严格地形限制',
+      'opt.strict.desc': ' — 任意两名玩家不可拥有相同的家乡地形',
+      'opt.board.title': '随机地图',
+      'opt.board.desc': ' — 同时随机选择一张游戏地图',
+      'opt.fireice.title': '《冰与火》板块/卡牌',
+      'opt.fireice.desc': ' — 包含《冰与火》的计分板块与奖励卡',
+      'opt.sound.title': '音效',
+      'opt.sound.desc': ' — 洗牌与揭晓时的短促提示音',
+
+      'action.randomize': '⚔️ 开始随机',
+      'action.rerollAll': '🎲 全部重新随机',
+      'action.newGame': '↩️ 新游戏',
+      'action.rerollFactions': '🎲 重新随机所有种族',
+      'action.rerollTiles': '🎲 重新随机板块',
+      'action.rerollBonus': '🎲 重新随机卡牌',
+      'action.rerollBoard': '🎲 重新随机地图',
+      'action.reroll': '🎲 重随',
+      'action.rerollSeat': '重新随机 {player} 的种族',
+
+      'reveal.text': '正在请示教派…',
+
+      'result.factions': '种族',
+      'result.tiles': '各轮计分板块',
+      'result.bonus': '奖励卡',
+      'result.board': '地图',
+      'result.round': '第 {n} 轮',
+      'result.cult': '教派：{text}',
+      'result.home': '家乡',
+      'result.boardLabel': '游戏地图',
+
+      'err.minPlayers': '至少需要 {n} 名玩家。',
+      'err.maxPlayers': '最多支持 {n} 名玩家。',
+      'err.emptyName': '每名玩家都需要一个名字。',
+      'err.duplicateNames': '玩家名字不能重复。',
+      'err.noFactions': '没有启用任何种族 — 请至少启用一组。',
+      'err.capacityStrict': '当前启用的种族只够 {capacity} 名玩家（已计入互斥与地形限制规则），' +
+        '但设置了 {players} 名玩家。请启用更多种族或减少玩家。',
+      'err.capacity': '当前启用的种族只够 {capacity} 名玩家（已计入互斥规则），' +
+        '但设置了 {players} 名玩家。请启用更多种族或减少玩家。',
+      'err.noAssignment': '无法为当前选择找到合法的种族分配 — 请启用更多种族，或关闭严格地形限制。',
+
+      'group.base': '基础游戏种族',
+      'group.fireice': '《冰与火》种族',
+      'group.fan': '玩家自制种族',
+      'group.fireice-fan': '《冰与火》玩家自制种族',
+
+      'terrain.plains': '平原',
+      'terrain.swamp': '沼泽',
+      'terrain.lakes': '湖泊',
+      'terrain.forest': '森林',
+      'terrain.mountains': '山地',
+      'terrain.wasteland': '荒地',
+      'terrain.desert': '沙漠',
+
+      'special.ice': '冰',
+      'special.volcano': '火山',
+      'special.variable': '可变',
+
+      'board.original': 'Terra Mystica 原版地图',
+      'board.fireice': '《冰与火》地图',
+      'board.loonlakes': 'Loon Lakes（自制地图）',
+      'board.fjords': 'Fjords（自制地图）',
+
+      'footer.notice': '非官方粉丝工具。Terra Mystica © Feuerland Spiele / ' +
+        'Helge Ostertag & Jens Drögemüller。将官方图片放入 assets/ 即可替换占位图 — 详见 README。'
+    },
+
+    /* ------------------------------------------------------------------ */
+    ru: {
+      'app.suffix': 'Генератор',
+      'app.tagline': 'Фракции · Ландшафты · Тайлы очков · Бонусные карты · Поля',
+      'app.language': 'Язык',
+
+      'setup.players': '1 · Игроки',
+      'setup.mode.names': 'Ввести имена',
+      'setup.mode.count': 'Только число игроков',
+      'setup.names.hint': '2–5 игроков. Все имена должны быть заполнены и уникальны.',
+      'setup.count.hint': 'Просто выберите число игроков — места называются Игрок 1–N.',
+      'setup.seatLabel': 'Игрок {n}',
+      'setup.addPlayer': '+ Добавить игрока',
+      'setup.playerPlaceholder': 'Имя игрока {n}',
+      'setup.removePlayer': 'Убрать игрока',
+      'setup.capacity': 'Активный набор рассчитан не более чем на {n} игрок(ов).',
+
+      'setup.pools': '2 · Выбор фракций',
+      'setup.pools.hint': 'Переключайте целые группы или разверните группу, чтобы включить/исключить отдельные фракции.',
+      'setup.pools.groupToggle': 'Включить/выключить всю группу',
+
+      'setup.options': '3 · Настройки',
+      'opt.strict.title': 'Строгая блокировка ландшафта',
+      'opt.strict.desc': ' — два игрока не могут иметь одинаковый родной ландшафт',
+      'opt.board.title': 'Случайное поле',
+      'opt.board.desc': ' — также выбрать игровое поле',
+      'opt.fireice.title': 'Тайлы/карты «Огня и льда»',
+      'opt.fireice.desc': ' — включить тайл очков и бонусную карту из «Огня и льда»',
+      'opt.sound.title': 'Звуковые эффекты',
+      'opt.sound.desc': ' — короткие звуки при перемешивании и раскрытии',
+
+      'action.randomize': '⚔️ Сгенерировать',
+      'action.rerollAll': '🎲 Перебросить всё',
+      'action.newGame': '↩️ Новая игра',
+      'action.rerollFactions': '🎲 Перебросить фракции',
+      'action.rerollTiles': '🎲 Перебросить тайлы',
+      'action.rerollBonus': '🎲 Перебросить карты',
+      'action.rerollBoard': '🎲 Перебросить поле',
+      'action.reroll': '🎲 Заново',
+      'action.rerollSeat': 'Перебросить фракцию игрока {player}',
+
+      'reveal.text': 'Совет с культами…',
+
+      'result.factions': 'Фракции',
+      'result.tiles': 'Тайлы очков по раундам',
+      'result.bonus': 'Бонусные карты',
+      'result.board': 'Поле',
+      'result.round': 'Раунд {n}',
+      'result.cult': 'Культ: {text}',
+      'result.home': 'родной',
+      'result.boardLabel': 'Игровое поле',
+
+      'err.minPlayers': 'Нужно не менее {n} игроков.',
+      'err.maxPlayers': 'Поддерживается не более {n} игроков.',
+      'err.emptyName': 'У каждого игрока должно быть имя.',
+      'err.duplicateNames': 'Имена игроков должны быть уникальными.',
+      'err.noFactions': 'Не выбрано ни одной фракции — включите хотя бы одну группу.',
+      'err.capacityStrict': 'Выбранных фракций хватает только на {capacity} игрок(ов) ' +
+        '(с учётом правил взаимного исключения и блокировки ландшафта), а игроков — {players}. ' +
+        'Включите больше фракций или уберите игроков.',
+      'err.capacity': 'Выбранных фракций хватает только на {capacity} игрок(ов) ' +
+        '(с учётом правил взаимного исключения), а игроков — {players}. ' +
+        'Включите больше фракций или уберите игроков.',
+      'err.noAssignment': 'Не удалось найти допустимое распределение фракций — ' +
+        'включите больше фракций или отключите строгую блокировку ландшафта.',
+
+      'group.base': 'Фракции базовой игры',
+      'group.fireice': 'Фракции «Огня и льда»',
+      'group.fan': 'Фанатские фракции',
+      'group.fireice-fan': 'Фанатские фракции «Огня и льда»',
+
+      'terrain.plains': 'Равнины',
+      'terrain.swamp': 'Болото',
+      'terrain.lakes': 'Озёра',
+      'terrain.forest': 'Лес',
+      'terrain.mountains': 'Горы',
+      'terrain.wasteland': 'Пустошь',
+      'terrain.desert': 'Пустыня',
+
+      'special.ice': 'Лёд',
+      'special.volcano': 'Вулкан',
+      'special.variable': 'Переменный',
+
+      'board.original': 'Оригинальное поле Terra Mystica',
+      'board.fireice': 'Поле «Огня и льда»',
+      'board.loonlakes': 'Loon Lakes (фанатская карта)',
+      'board.fjords': 'Fjords (фанатская карта)',
+
+      'footer.notice': 'Неофициальный фанатский инструмент. Terra Mystica © Feuerland Spiele / ' +
+        'Helge Ostertag & Jens Drögemüller. Поместите официальные изображения в assets/, ' +
+        'чтобы заменить заглушки — см. README.'
     }
   };
+
+  /**
+   * Faction names per language, merged into STRINGS as `faction.<id>` keys
+   * below. English is omitted — it falls back to the name in js/data.js,
+   * which is also what artwork file names are matched against, so a
+   * translation never changes which image loads.
+   */
+  var FACTION_NAMES = {
+    de: {
+      halflings: 'Halblinge', cultists: 'Kultisten', alchemists: 'Alchemisten',
+      darklings: 'Dunkellinge', mermaids: 'Meerjungfrauen', swarmlings: 'Schwarmlinge',
+      witches: 'Hexen', auren: 'Auren', dwarves: 'Zwerge', engineers: 'Ingenieure',
+      giants: 'Giganten', chaosmagicians: 'Chaosmagier', fakirs: 'Fakire', nomads: 'Nomaden',
+      icemaidens: 'Eismaiden', yetis: 'Yetis', acolytes: 'Akolythen',
+      dragonlords: 'Drachenfürsten', riverwalkers: 'Flusswanderer', shapeshifters: 'Gestaltwandler',
+      prospectors: 'Goldsucher', timetravelers: 'Zeitreisende',
+      childrenofthewyrm: 'Kinder des Wyrm', goblins: 'Goblins', atlanteans: 'Atlanter',
+      wisps: 'Irrlichter', chashdallah: 'Chash Dallah', enlightened: 'Die Erleuchteten',
+      conspirators: 'Verschwörer', dyniongeifr: 'Dynion Geifr', architects: 'Architekten',
+      treasurers: 'Schatzmeister', archivists: 'Archivare', djinn: 'Dschinn',
+      snowshamans: 'Schneeschamanen', selkies: 'Selkies', firewalkers: 'Feuerläufer',
+      kingdomofember: 'Königreich der Glut', changelings: 'Wechselbälger', geologists: 'Geologen'
+    },
+    fr: {
+      halflings: 'Halfelins', cultists: 'Cultistes', alchemists: 'Alchimistes',
+      darklings: 'Ténébreux', mermaids: 'Sirènes', swarmlings: 'Grouillants',
+      witches: 'Sorcières', auren: 'Auren', dwarves: 'Nains', engineers: 'Ingénieurs',
+      giants: 'Géants', chaosmagicians: 'Mages du Chaos', fakirs: 'Fakirs', nomads: 'Nomades',
+      icemaidens: 'Vierges de Glace', yetis: 'Yétis', acolytes: 'Acolytes',
+      dragonlords: 'Seigneurs Dragons', riverwalkers: 'Marcheurs des Rivières',
+      shapeshifters: 'Métamorphes',
+      prospectors: 'Prospecteurs', timetravelers: 'Voyageurs du Temps',
+      childrenofthewyrm: 'Enfants du Wyrm', goblins: 'Gobelins', atlanteans: 'Atlantes',
+      wisps: 'Feux Follets', chashdallah: 'Chash Dallah', enlightened: 'Les Illuminés',
+      conspirators: 'Conspirateurs', dyniongeifr: 'Dynion Geifr', architects: 'Architectes',
+      treasurers: 'Trésoriers', archivists: 'Archivistes', djinn: 'Djinns',
+      snowshamans: 'Chamans des Neiges', selkies: 'Selkies', firewalkers: 'Marcheurs de Feu',
+      kingdomofember: 'Royaume de Braise', changelings: 'Changelins', geologists: 'Géologues'
+    },
+    es: {
+      halflings: 'Medianos', cultists: 'Cultistas', alchemists: 'Alquimistas',
+      darklings: 'Oscuros', mermaids: 'Sirenas', swarmlings: 'Enjambres',
+      witches: 'Brujas', auren: 'Auren', dwarves: 'Enanos', engineers: 'Ingenieros',
+      giants: 'Gigantes', chaosmagicians: 'Magos del Caos', fakirs: 'Faquires', nomads: 'Nómadas',
+      icemaidens: 'Doncellas de Hielo', yetis: 'Yetis', acolytes: 'Acólitos',
+      dragonlords: 'Señores Dragón', riverwalkers: 'Caminantes del Río',
+      shapeshifters: 'Cambiaformas',
+      prospectors: 'Prospectores', timetravelers: 'Viajeros del Tiempo',
+      childrenofthewyrm: 'Hijos del Wyrm', goblins: 'Goblins', atlanteans: 'Atlantes',
+      wisps: 'Fuegos Fatuos', chashdallah: 'Chash Dallah', enlightened: 'Los Iluminados',
+      conspirators: 'Conspiradores', dyniongeifr: 'Dynion Geifr', architects: 'Arquitectos',
+      treasurers: 'Tesoreros', archivists: 'Archiveros', djinn: 'Genios',
+      snowshamans: 'Chamanes de las Nieves', selkies: 'Selkies', firewalkers: 'Caminantes del Fuego',
+      kingdomofember: 'Reino de Brasas', changelings: 'Cambiados', geologists: 'Geólogos'
+    },
+    zh: {
+      halflings: '半身人', cultists: '邪教徒', alchemists: '炼金术士',
+      darklings: '暗影族', mermaids: '美人鱼', swarmlings: '虫群族',
+      witches: '女巫', auren: '奥伦族', dwarves: '矮人', engineers: '工程师',
+      giants: '巨人', chaosmagicians: '混沌法师', fakirs: '苦行僧', nomads: '游牧民',
+      icemaidens: '冰霜少女', yetis: '雪人', acolytes: '侍僧',
+      dragonlords: '龙领主', riverwalkers: '河行者', shapeshifters: '变形者',
+      prospectors: '探矿者', timetravelers: '时间旅行者',
+      childrenofthewyrm: '龙蛇之子', goblins: '哥布林', atlanteans: '亚特兰蒂斯人',
+      wisps: '鬼火', chashdallah: '查什·达拉', enlightened: '觉悟者',
+      conspirators: '阴谋家', dyniongeifr: '迪尼恩·盖弗', architects: '建筑师',
+      treasurers: '司库', archivists: '档案官', djinn: '灯神',
+      snowshamans: '雪之萨满', selkies: '海豹人', firewalkers: '火行者',
+      kingdomofember: '余烬王国', changelings: '换生灵', geologists: '地质学家'
+    },
+    ru: {
+      halflings: 'Полурослики', cultists: 'Культисты', alchemists: 'Алхимики',
+      darklings: 'Тёмные', mermaids: 'Русалки', swarmlings: 'Роевики',
+      witches: 'Ведьмы', auren: 'Аурен', dwarves: 'Гномы', engineers: 'Инженеры',
+      giants: 'Великаны', chaosmagicians: 'Маги Хаоса', fakirs: 'Факиры', nomads: 'Кочевники',
+      icemaidens: 'Ледяные девы', yetis: 'Йети', acolytes: 'Аколиты',
+      dragonlords: 'Повелители драконов', riverwalkers: 'Речные странники',
+      shapeshifters: 'Оборотни',
+      prospectors: 'Старатели', timetravelers: 'Путешественники во времени',
+      childrenofthewyrm: 'Дети Змея', goblins: 'Гоблины', atlanteans: 'Атланты',
+      wisps: 'Блуждающие огни', chashdallah: 'Чаш Даллах', enlightened: 'Просветлённые',
+      conspirators: 'Заговорщики', dyniongeifr: 'Динион Гейфр', architects: 'Архитекторы',
+      treasurers: 'Казначеи', archivists: 'Архивариусы', djinn: 'Джинны',
+      snowshamans: 'Снежные шаманы', selkies: 'Селки', firewalkers: 'Огнеходцы',
+      kingdomofember: 'Королевство углей', changelings: 'Подменыши', geologists: 'Геологи'
+    }
+  };
+
+  Object.keys(FACTION_NAMES).forEach(function (lang) {
+    var names = FACTION_NAMES[lang];
+    Object.keys(names).forEach(function (id) {
+      STRINGS[lang]['faction.' + id] = names[id];
+    });
+  });
 
   var STORAGE_KEY = 'tm-randomizer-lang';
   var listeners = [];
