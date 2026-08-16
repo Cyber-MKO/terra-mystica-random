@@ -2,15 +2,17 @@
  * DOM rendering helpers. All functions here only draw — game state lives in
  * app.js, game logic in randomizer.js.
  *
- * Images: every card tries to load an image from assets/ (see paths below).
- * If the file is missing, the styled placeholder underneath stays visible,
- * so the app works with zero assets and upgrades automatically when
- * official artwork is dropped in.
+ * Images: every card tries to load an image from assets/. If no file is
+ * found the styled placeholder underneath stays visible, so the app works
+ * with zero assets and upgrades automatically when artwork is dropped in.
  */
 (function (global) {
   'use strict';
 
   var D = global.TMData;
+
+  /** Image formats accepted for drop-in artwork, tried in this order. */
+  var IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'webp'];
 
   function el(tag, className, text) {
     var node = document.createElement(tag);
@@ -19,13 +21,57 @@
     return node;
   }
 
-  /** <img> that removes itself if the asset file is missing. */
-  function optionalImage(src, alt) {
+  /**
+   * File names to try for an item, most likely first.
+   *
+   * Web servers (GitHub Pages included) are case-sensitive, and artwork is
+   * commonly named after either the item id (`chaosmagicians.jpg`) or its
+   * display name (`ChaosMagicians.png`), so both spellings are attempted in
+   * every accepted format. An explicit `image` value in js/data.js — a bare
+   * file name, with or without extension — always wins.
+   */
+  function imageCandidates(dir, item) {
+    var names = [];
+    function add(name) {
+      if (name && names.indexOf(name) === -1) names.push(name);
+    }
+    add(item.image);
+    add(item.id);
+    // Display name with spaces and punctuation stripped, casing preserved.
+    if (item.name) add(item.name.replace(/[^A-Za-z0-9]/g, ''));
+
+    var paths = [];
+    // Names that already carry an extension are used verbatim, first.
+    names = names.filter(function (name) {
+      if (!/\.[a-z0-9]+$/i.test(name)) return true;
+      paths.push(dir + '/' + name);
+      return false;
+    });
+    // Then sweep by format so the common ones are found with the fewest
+    // misses, whichever spelling the file uses.
+    IMAGE_EXTENSIONS.forEach(function (ext) {
+      names.forEach(function (name) {
+        paths.push(dir + '/' + name + '.' + ext);
+      });
+    });
+    return paths;
+  }
+
+  /**
+   * <img> that walks a candidate list until one loads, and removes itself
+   * when none do (leaving the placeholder visible).
+   */
+  function optionalImage(candidates, alt) {
     var img = el('img');
-    img.src = src;
     img.alt = alt || '';
     img.loading = 'lazy';
-    img.addEventListener('error', function () { img.remove(); });
+    var next = 0;
+    function tryNext() {
+      if (next >= candidates.length) { img.remove(); return; }
+      img.src = candidates[next++];
+    }
+    img.addEventListener('error', tryNext);
+    tryNext();
     return img;
   }
 
@@ -52,7 +98,7 @@
 
     var art = el('div', 'art');
     art.appendChild(el('span', 'initials', initials(f.name)));
-    art.appendChild(optionalImage('assets/factions/' + f.id + '.jpg', f.name + ' artwork'));
+    art.appendChild(optionalImage(imageCandidates('assets/factions', f), f.name + ' artwork'));
     card.appendChild(art);
 
     var meta = el('div', 'meta');
@@ -90,7 +136,7 @@
     node.appendChild(el('p', 'round-label', 'Round ' + roundNumber));
     node.appendChild(el('p', 'tile-main', tile.action));
     node.appendChild(el('p', 'tile-sub', 'Cult: ' + tile.cult));
-    node.appendChild(optionalImage('assets/tiles/' + tile.id + '.jpg', 'Scoring tile ' + tile.id));
+    node.appendChild(optionalImage(imageCandidates('assets/tiles', tile), 'Scoring tile ' + tile.id));
     return node;
   }
 
@@ -99,7 +145,7 @@
     var node = el('div', 'tile tile-tall flip-in');
     node.appendChild(el('p', 'round-label', card.id.toUpperCase()));
     node.appendChild(el('p', 'tile-main', card.text));
-    node.appendChild(optionalImage('assets/bonus/' + card.id + '.jpg', 'Bonus card ' + card.id));
+    node.appendChild(optionalImage(imageCandidates('assets/bonus', card), 'Bonus card ' + card.id));
     return node;
   }
 
@@ -107,7 +153,7 @@
     var node = el('div', 'tile flip-in');
     node.appendChild(el('p', 'round-label', 'Game board'));
     node.appendChild(el('p', 'tile-main', board.name));
-    node.appendChild(optionalImage('assets/boards/' + board.id + '.jpg', board.name));
+    node.appendChild(optionalImage(imageCandidates('assets/boards', board), board.name));
     return node;
   }
 
