@@ -20,7 +20,7 @@ scoring tiles `score1`–`score9`; bonus cards `bon1`–`bon10`; boards
 `original`, `fireice`, `loonlakes`, `fjords`).
 
 Recommended sizes (matching the physical component shapes the app now
-renders): factions ~400×300px, scoring tiles ~300×300px (square),
-bonus cards ~215×600px (tall strip, like the real ~45×126 mm cards),
+renders): factions ~400×300px, scoring tiles ~300×165px (landscape),
+bonus cards ~200×595px (tall strip, like the real ~45×126 mm cards),
 boards ~600×400px. Other aspect ratios still work — images are cropped
 with `object-fit: cover`.

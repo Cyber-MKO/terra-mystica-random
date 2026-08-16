@@ -310,33 +310,34 @@ main { max-width: 960px; margin: 0 auto; padding: 0 1rem 3rem; }
   overflow: hidden;
 }
 
-/* Scoring tiles are square in the physical game. Fixed-width columns keep
-   them tile-sized instead of stretching to fill the row. */
+/* Scoring tiles are landscape rectangles in the physical game (~300x165).
+   Fixed-width columns keep them tile-sized instead of stretching. */
 #result-tiles {
-  grid-template-columns: repeat(auto-fill, 136px);
+  grid-template-columns: repeat(auto-fill, 204px);
   justify-content: flex-start;
 }
-.tile.tile-square {
-  aspect-ratio: 1 / 1;
+.tile.tile-score {
+  aspect-ratio: 300 / 165;
   min-height: 0;
   display: flex;
   flex-direction: column;
 }
-.tile.tile-square .tile-main {
+.tile.tile-score .round-label { margin-bottom: 0.15rem; }
+.tile.tile-score .tile-main {
   flex: 1;
   display: flex;
   align-items: center;
   font-size: 0.88rem;
 }
-.tile.tile-square .tile-sub { font-size: 0.74rem; }
+.tile.tile-score .tile-sub { margin-top: 0.15rem; font-size: 0.74rem; }
 
-/* Bonus cards are tall narrow strips (~45x126 mm) in the physical game. */
+/* Bonus cards are tall narrow strips (~45x126 mm; scans ~200x595). */
 #result-bonus {
   grid-template-columns: repeat(auto-fill, 106px);
   justify-content: flex-start;
 }
 .tile.tile-tall {
-  aspect-ratio: 200 / 620; /* matches the real cards and typical scans */
+  aspect-ratio: 200 / 595;
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -345,8 +346,9 @@ main { max-width: 960px; margin: 0 auto; padding: 0 1rem 3rem; }
 .tile.tile-tall .tile-main { font-size: 0.78rem; }
 
 @media (max-width: 480px) {
-  #result-tiles { grid-template-columns: repeat(auto-fill, 118px); }
+  #result-tiles { grid-template-columns: repeat(auto-fill, 168px); }
   #result-bonus { grid-template-columns: repeat(auto-fill, 92px); }
+  .tile.tile-score .tile-main { font-size: 0.8rem; }
   .tile.tile-tall .tile-main { font-size: 0.72rem; }
 }
 .tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }

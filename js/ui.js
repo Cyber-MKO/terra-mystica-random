@@ -84,9 +84,9 @@
 
   /* ---------------- tiles / cards / board ---------------- */
 
-  // Square, like the physical scoring tiles.
+  // Landscape rectangle, like the physical scoring tiles (~300x165).
   function scoringTile(tile, roundNumber) {
-    var node = el('div', 'tile tile-square flip-in');
+    var node = el('div', 'tile tile-score flip-in');
     node.appendChild(el('p', 'round-label', 'Round ' + roundNumber));
     node.appendChild(el('p', 'tile-main', tile.action));
     node.appendChild(el('p', 'tile-sub', 'Cult: ' + tile.cult));
